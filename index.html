@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linda Muchachita</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: black;
+      color: white;
+      font-family: 'Press Start 2P', cursive;
+      overflow: hidden;
+      height: 100vh;
+      position: relative;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .center-title {
+      position: relative;
+      z-index: 10;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(1.2em, 4vw, 2.5em);
+      color: rgb(251, 241, 241);
+      text-shadow: 0 0 5px #f0eef0, 0 0 10px #ffb6c1, 0 0 15px rgba(222, 63, 156, 0.7);
+      border: 2px solid rgba(229, 21, 166, 0.9); /*Contorno*/
+      padding: clamp(8px, 2vw, 18px) clamp(12px, 3vw, 24px);
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0.75);
+      letter-spacing: 1px;
+      box-shadow: 0 0 5px rgba(218, 14, 204, 0.5);
+      text-align: center;
+      max-width: 90vw;
+      word-wrap: break-word;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .center-title:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 0 0 15px rgba(218, 14, 204, 0.8);
+    }
+
+    .music-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(229, 21, 166, 0.9);
+      border: 2px solid #ffb6c1;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 24px;
+      color: white;
+      box-shadow: 0 0 10px rgba(229, 21, 166, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .music-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(229, 21, 166, 0.8);
+    }
+
+    .music-button.playing {
+      animation: pulse 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px rgba(229, 21, 166, 0.5); }
+      100% { box-shadow: 0 0 25px rgba(229, 21, 166, 1); }
+    }
+
+    .falling-element {
+      position: absolute;
+      animation: fallSway linear;
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+    }
+
+    .falling-text {
+      font-size: clamp(0.8em, 2vw, 1.2em);
+      font-weight: bold;
+      text-shadow: 0 0 5px currentColor;
+      white-space: nowrap;
+    }
+
+    .falling-heart {
+      font-size: clamp(1em, 3vw, 2em);
+      filter: drop-shadow(0 0 3px currentColor);
+    }
+
+    .falling-emoji {
+      font-size: clamp(1em, 3vw, 1.5em);
+      filter: drop-shadow(0 0 3px rgba(255,255,255,0.3));
+    }
+
+    .star-particle {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      width: 3px;
+      height: 3px;
+      opacity: 0.6;
+      animation: fallSway linear;
+      z-index: 1;
+    }
+
+    @keyframes fallSway {
+      0% {
+        transform: translateY(-5vh) translateX(0px);
+        opacity: 1;
+      }
+      25% {
+        transform: translateY(25vh) translateX(5px);
+      }
+      50% {
+        transform: translateY(50vh) translateX(-5px);
+      }
+      75% {
+        transform: translateY(75vh) translateX(5px);
+      }
+      100% {
+        transform: translateY(105vh) translateX(0px);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="center-title">LINDA MUCHACHITA</div>
+  
+  <div class="music-button" id="musicButton">🎵</div>
+  
+  <audio id="backgroundMusic" loop preload="auto">
+    <source src="Linda Muchachita.mp3" type="audio/mpeg">
+    Tu navegador no soporta el elemento de audio.
+  </audio>
+
+  <script>
+    const frases = [
+      "Diosa terrenal","Mi solecito","Mi vida","Mi todo", "Eres un sueño", "Me fascinas", "Belleza única",
+      "Mi razón", "Eres lo mejor","Mi princesa", "Diosa total", "Mirada cautivante",
+      "Eres luz", "Encanto puro", "Elegante y bella", "Inigualable",
+      "Te pienso siempre", "Estrella brillante", "Dulce sonrisa", "Hermosa",
+      "Corazón de oro", "Encanto eterno", "Eres magia", "Amor bonito"
+    ];
+
+    const hearts = ["💖", "💕", "💗", "💘", "💝"];
+    const emojis = ["✨", "🌟", "💫", "🌙", "🌸"];
+    const colors = ["#ffb6c1", "#ffc0cb", "#f8bbd9", "#dda0dd", "#e6e6fa", "#ffd1dc"];
+
+    let musicStarted = false;
+    const music = document.getElementById('backgroundMusic');
+    const musicButton = document.getElementById('musicButton');
+
+    // Función para iniciar/pausar la música
+    function toggleMusic() {
+      if (music.paused) {
+        music.play().then(() => {
+          musicButton.textContent = '🔊';
+          musicButton.classList.add('playing');
+          musicStarted = true;
+        }).catch(e => {
+          console.log('Error al reproducir música:', e);
+          musicButton.textContent = '❌';
+        });
+      } else {
+        music.pause();
+        musicButton.textContent = '🎵';
+        musicButton.classList.remove('playing');
+      }
+    }
+
+    // Event listeners
+    musicButton.addEventListener('click', toggleMusic);
+    document.addEventListener('click', function(e) {
+      if (!musicStarted && e.target !== musicButton) {
+        toggleMusic();
+      }
+    });
+    document.addEventListener('touchstart', function(e) {
+      if (!musicStarted && e.target !== musicButton) {
+        toggleMusic();
+      }
+    });
+
+    function createFallingElement(content, className) {
+      const element = document.createElement("div");
+      element.className = `falling-element ${className}`;
+      element.textContent = content;
+      element.style.top = "-5vh";
+      element.style.left = `${Math.random() * 90}vw`;
+      element.style.color = colors[Math.floor(Math.random() * colors.length)];
+      const duration = (Math.random() * 4 + 6);
+      element.style.animationDuration = duration + "s";
+      document.body.appendChild(element);
+      setTimeout(() => element.remove(), (duration + 1) * 1000);
+    }
+
+    function createFallingParticle() {
+      const particle = document.createElement("div");
+      particle.className = "star-particle";
+      particle.style.left = Math.random() * 100 + "vw";
+      particle.style.top = "-2vh";
+      const duration = (Math.random() * 6 + 4);
+      particle.style.animationDuration = duration + "s";
+      document.body.appendChild(particle);
+      setTimeout(() => particle.remove(), (duration + 1) * 1000);
+    }
+
+    function launchEffects() {
+      createFallingElement(frases[Math.floor(Math.random() * frases.length)], "falling-text");
+      createFallingElement(hearts[Math.floor(Math.random() * hearts.length)], "falling-heart");
+      createFallingElement(emojis[Math.floor(Math.random() * emojis.length)], "falling-emoji");
+      createFallingParticle();
+    }
+
+    function createStars() {
+      const container = document.querySelector('.stars');
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = star.style.height = Math.random() * 2 + 1 + 'px';
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.top = Math.random() * 100 + 'vh';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        container.appendChild(star);
+      }
+    }
+
+    createStars();
+    setInterval(launchEffects, 500);
+  </script>
+</body>
+</html>
